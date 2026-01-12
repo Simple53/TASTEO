@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 食刻</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/tasteo.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: var(--text-light);
+        }
+        
+        .role-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .role-tab {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .role-tab:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .role-tab.active {
+            border-color: var(--primary-color);
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .guest-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-light);
+        }
+        
+        .guest-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .guest-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .default-account {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .default-account strong {
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🍽️ 食刻</h1>
+                <p>让美食触手可及</p>
+            </div>
+            
+            <div class="role-tabs">
+                <button class="role-tab" data-role="customer">
+                    👤 食客登录
+                </button>
+                <button class="role-tab active" data-role="merchant">
+                    💼 商家登录
+                </button>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <input type="text" class="form-input" id="username" 
+                       placeholder="用户名" required autocomplete="username">
+                <input type="password" class="form-input" id="password" 
+                       placeholder="密码" required autocomplete="current-password">
+                <button type="submit" class="login-btn">登录</button>
+            </form>
+            
+            <div class="guest-link">
+                <a href="/customer">游客模式 (跳过登录)</a>
+            </div>
+            
+            <div class="default-account">
+                <strong>默认管理员账号:</strong><br>
+                用户名: admin<br>
+                密码: admin123
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const roleTabs = document.querySelectorAll('.role-tab');
+        const loginForm = document.getElementById('loginForm');
+        let currentRole = 'merchant';
+        
+        // 角色切换
+        roleTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentRole = tab.dataset.role;
+                roleTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+        
+        // 登录提交
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        role: currentRole
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // 保存登录状态
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    // 跳转
+                    if (currentRole === 'merchant') {
+                        window.location.href = '/merchant';
+                    } else {
+                        window.location.href = '/customer';
+                    }
+                } else {
+                    alert(result.error || '登录失败');
+                }
+            } catch (error) {
+                console.error('登录失败:', error);
+                alert('网络错误,请重试');
+            }
+        });
+    </script>
+</body>
+</html>

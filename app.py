@@ -5,7 +5,7 @@
 支持用户点餐、商家管理、数据导出
 """
 
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, session, redirect, url_for
 from flask_cors import CORS
 from datetime import datetime
 import json
@@ -16,6 +16,10 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 import socket
+import secrets
+
+# 导入认证模块
+from auth import authenticate_user, create_user
 
 app = Flask(__name__)
 CORS(app)
@@ -23,6 +27,7 @@ CORS(app)
 # 配置
 DATABASE = 'database.db'
 app.config['JSON_AS_ASCII'] = False
+app.config['SECRET_KEY'] = secrets.token_hex(16)  # 生成随机密钥
 
 # ==================== 数据库操作 ====================
 
@@ -98,8 +103,13 @@ def init_db():
 
 @app.route('/')
 def index():
-    """首页重定向到用户端"""
-    return render_template('customer.html')
+    """首页重定向到登录页"""
+    return redirect(url_for('login'))
+
+@app.route('/login')
+def login():
+    """登录页面"""
+    return render_template('login.html')
 
 @app.route('/customer')
 def customer():
@@ -112,6 +122,50 @@ def merchant():
     return render_template('merchant.html')
 
 # ==================== API 接口 ====================
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    """用户登录"""
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+        role = data.get('role', 'customer')
+        
+        user = authenticate_user(username, password, role)
+        
+        if user:
+            session['user'] = user
+            return jsonify({
+                'success': True,
+                'user': user
+            })
+        else:
+            return jsonify({'error': '用户名或密码错误'}), 401
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/logout', methods=['POST'])
+def api_logout():
+    """用户登出"""
+    session.pop('user', None)
+    return jsonify({'success': True})
+
+@app.route('/api/register', methods=['POST'])
+def api_register():
+    """用户注册"""
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+        role = data.get('role', 'customer')
+        
+        if create_user(username, password, role):
+            return jsonify({'success': True})
+        else:
+            return jsonify({'error': '用户名已存在'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/menu', methods=['GET'])
 def get_menu():
@@ -335,7 +389,7 @@ if __name__ == '__main__':
     local_ip = get_local_ip()
     
     print("=" * 60)
-    print("🍜 点点鲜 - 局域网点单系统")
+    print("🍽️ 食刻 (TASTEO) - 让美食触手可及")
     print("=" * 60)
     print(f"📱 用户点餐页面: http://{local_ip}:5000/customer")
     print(f"💼 商家管理页面: http://{local_ip}:5000/merchant")

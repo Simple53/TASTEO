@@ -3,37 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在线点餐 - 顾客端</title>
+    <title>食刻 - 在线点餐</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/tasteo.css">
 </head>
 <body>
     <!-- 头部 -->
     <div class="header">
-        <h1>🍜 在线点餐系统</h1>
-        <p>欢迎光临,请选择您喜欢的菜品</p>
+        <div class="header-content">
+            <h1>�️ 食刻</h1>
+            <div class="layout-switch">
+                <button class="layout-btn active" data-layout="list" title="列表布局">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <rect x="3" y="4" width="2" height="4"></rect>
+                        <rect x="3" y="10" width="2" height="4"></rect>
+                        <rect x="3" y="16" width="2" height="4"></rect>
+                    </svg>
+                </button>
+                <button class="layout-btn" data-layout="grid" title="网格布局">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="container">
-        <!-- 分类筛选 -->
-        <div class="category-filter" id="categoryFilter">
-            <button class="category-btn active" data-category="all">全部</button>
+        <!-- 分类导航 -->
+        <div class="category-nav" id="categoryNav">
+            <div class="category-scroll">
+                <button class="category-tab active" data-category="all">
+                    <span class="category-icon">🔥</span>
+                    <span>热销</span>
+                </button>
+            </div>
         </div>
 
-        <!-- 菜单网格 -->
-        <div class="menu-grid" id="menuGrid">
+        <!-- 菜单列表 -->
+        <div class="menu-container list-layout" id="menuContainer">
             <!-- 动态加载菜品 -->
         </div>
     </div>
 
     <!-- 购物车栏 -->
     <div class="cart-bar">
+        <div class="cart-icon-wrapper" id="cartIconWrapper">
+            <div class="cart-icon">🛒</div>
+            <span class="cart-badge" id="cartBadge">0</span>
+        </div>
         <div class="cart-info">
-            <div class="cart-count">
-                <span id="cartCount">0</span> 件
-            </div>
-            <div class="cart-total">
-                合计: ¥<span id="cartTotal">0</span>
-            </div>
+            <div class="cart-total">¥<span id="cartTotal">0</span></div>
+            <div class="cart-desc">另需配送费¥3.5</div>
         </div>
         <button class="checkout-btn" id="checkoutBtn" disabled>去结算</button>
     </div>
@@ -55,17 +82,34 @@
             <form id="orderForm">
                 <div class="form-group">
                     <label for="tableNumber">桌号 *</label>
-                    <input type="text" id="tableNumber" required placeholder="请输入桌号">
+                    <input type="text" id="tableNumber" required placeholder="请输入桌号" autocomplete="off">
                 </div>
-                <div class="form-group">
-                    <label for="customerName">姓名 *</label>
-                    <input type="text" id="customerName" required placeholder="请输入您的姓名">
-                </div>
-                <div class="order-total">
-                    总计: ¥<span id="modalTotal">0</span>
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>小计</span>
+                        <span>¥<span id="modalSubtotal">0</span></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>配送费</span>
+                        <span>¥3.5</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>总计</span>
+                        <span>¥<span id="modalTotal">0</span></span>
+                    </div>
                 </div>
                 <button type="submit" class="submit-order-btn">提交订单</button>
             </form>
+        </div>
+    </div>
+
+    <!-- 菜品详情模态框 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content detail-modal">
+            <button class="close-btn" id="closeDetailModal">&times;</button>
+            <div id="detailContent">
+                <!-- 动态加载详情 -->
+            </div>
         </div>
     </div>
 

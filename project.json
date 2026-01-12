@@ -1,10 +1,17 @@
 {
-  "name": "diandianxian",
-  "display_name": "点点鲜",
-  "version": "1.0.0",
-  "description": "轻量级局域网点单系统 - 类似美团的点餐应用",
+  "name": "tasteo",
+  "display_name": "食刻",
+  "version": "2.0.0",
+  "description": "轻量级局域网点单系统 - 让美食触手可及",
   "author": "Your Name",
   "license": "MIT",
-  "repository": "https://github.com/yourusername/diandianxian",
-  "keywords": ["ordering", "restaurant", "lan", "flask", "点餐系统"]
+  "repository": "https://github.com/Simple53/TASTEO",
+  "keywords": [
+    "ordering",
+    "restaurant",
+    "lan",
+    "flask",
+    "点餐系统",
+    "美食"
+  ]
 }
