@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 商家端</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header merchant-header">
+        <h1>📊 订单管理系统</h1>
+        <p>实时订单监控与管理</p>
+    </div>
+
+    <div class="container">
+        <!-- 统计卡片 -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="totalOrders">0</div>
+                <div class="stat-label">总订单数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingOrders">0</div>
+                <div class="stat-label">待处理订单</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">¥<span id="totalRevenue">0</span></div>
+                <div class="stat-label">总营业额</div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-bar">
+            <button class="action-btn btn-primary" id="refreshBtn">🔄 刷新订单</button>
+            <button class="action-btn btn-success" id="exportExcelBtn">📊 导出 Excel</button>
+            <button class="action-btn btn-secondary" id="exportCsvBtn">📄 导出 CSV</button>
+            <label style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="autoRefresh" checked>
+                <span>自动刷新 (3秒)</span>
+            </label>
+        </div>
+
+        <!-- 订单筛选 -->
+        <div class="category-filter">
+            <button class="category-btn active" data-status="all">全部订单</button>
+            <button class="category-btn" data-status="pending">待处理</button>
+            <button class="category-btn" data-status="completed">已完成</button>
+        </div>
+
+        <!-- 订单网格 -->
+        <div class="orders-grid" id="ordersGrid">
+            <!-- 动态加载订单 -->
+        </div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">暂无订单</div>
+        </div>
+    </div>
+
+    <script src="/static/js/merchant.js"></script>
+</body>
+</html>

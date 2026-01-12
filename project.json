@@ -1,0 +1,10 @@
+{
+  "name": "diandianxian",
+  "display_name": "点点鲜",
+  "version": "1.0.0",
+  "description": "轻量级局域网点单系统 - 类似美团的点餐应用",
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": "https://github.com/yourusername/diandianxian",
+  "keywords": ["ordering", "restaurant", "lan", "flask", "点餐系统"]
+}

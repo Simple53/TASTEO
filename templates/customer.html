@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线点餐 - 顾客端</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <h1>🍜 在线点餐系统</h1>
+        <p>欢迎光临,请选择您喜欢的菜品</p>
+    </div>
+
+    <div class="container">
+        <!-- 分类筛选 -->
+        <div class="category-filter" id="categoryFilter">
+            <button class="category-btn active" data-category="all">全部</button>
+        </div>
+
+        <!-- 菜单网格 -->
+        <div class="menu-grid" id="menuGrid">
+            <!-- 动态加载菜品 -->
+        </div>
+    </div>
+
+    <!-- 购物车栏 -->
+    <div class="cart-bar">
+        <div class="cart-info">
+            <div class="cart-count">
+                <span id="cartCount">0</span> 件
+            </div>
+            <div class="cart-total">
+                合计: ¥<span id="cartTotal">0</span>
+            </div>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn" disabled>去结算</button>
+    </div>
+
+    <!-- 结算模态框 -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>确认订单</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+
+            <!-- 购物车列表 -->
+            <div class="cart-items" id="cartItems">
+                <!-- 动态加载购物车项 -->
+            </div>
+
+            <!-- 订单信息表单 -->
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="tableNumber">桌号 *</label>
+                    <input type="text" id="tableNumber" required placeholder="请输入桌号">
+                </div>
+                <div class="form-group">
+                    <label for="customerName">姓名 *</label>
+                    <input type="text" id="customerName" required placeholder="请输入您的姓名">
+                </div>
+                <div class="order-total">
+                    总计: ¥<span id="modalTotal">0</span>
+                </div>
+                <button type="submit" class="submit-order-btn">提交订单</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/customer.js"></script>
+</body>
+</html>
