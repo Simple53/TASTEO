@@ -35,7 +35,7 @@ jobs:
           Compress-Archive -Path release\* -DestinationPath diandianxian-windows.zip
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: diandianxian-windows.zip
@@ -69,7 +69,7 @@ jobs:
           tar -czf diandianxian-linux.tar.gz -C release .
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linux-build
           path: diandianxian-linux.tar.gz
@@ -103,7 +103,7 @@ jobs:
           tar -czf diandianxian-macos.tar.gz -C release .
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-build
           path: diandianxian-macos.tar.gz
@@ -111,11 +111,13 @@ jobs:
   create-release:
     needs: [build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
       
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -127,3 +129,4 @@ jobs:
           body_path: RELEASE_NOTES.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
