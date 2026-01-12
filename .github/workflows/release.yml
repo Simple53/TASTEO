@@ -1,0 +1,129 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+      
+      - name: Build executable
+        run: |
+          pyinstaller --clean --onefile --add-data "templates;templates" --add-data "static;static" --add-data "database.db;." --name "diandianxian" app.py
+      
+      - name: Create release package
+        run: |
+          mkdir release
+          copy dist\diandianxian.exe release\
+          copy README.md release\
+          copy QUICKSTART.md release\
+          copy database.db release\
+          Compress-Archive -Path release\* -DestinationPath diandianxian-windows.zip
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: diandianxian-windows.zip
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+      
+      - name: Build executable
+        run: |
+          pyinstaller --clean --onefile --add-data "templates:templates" --add-data "static:static" --add-data "database.db:." --name "diandianxian" app.py
+      
+      - name: Create release package
+        run: |
+          mkdir release
+          cp dist/diandianxian release/
+          cp README.md release/
+          cp QUICKSTART.md release/
+          cp database.db release/
+          tar -czf diandianxian-linux.tar.gz -C release .
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-build
+          path: diandianxian-linux.tar.gz
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+      
+      - name: Build executable
+        run: |
+          pyinstaller --clean --onefile --add-data "templates:templates" --add-data "static:static" --add-data "database.db:." --name "diandianxian" app.py
+      
+      - name: Create release package
+        run: |
+          mkdir release
+          cp dist/diandianxian release/
+          cp README.md release/
+          cp QUICKSTART.md release/
+          cp database.db release/
+          tar -czf diandianxian-macos.tar.gz -C release .
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-build
+          path: diandianxian-macos.tar.gz
+
+  create-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            windows-build/diandianxian-windows.zip
+            linux-build/diandianxian-linux.tar.gz
+            macos-build/diandianxian-macos.tar.gz
+          body_path: RELEASE_NOTES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
